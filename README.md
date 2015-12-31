@@ -15,20 +15,40 @@ A simple project to edit the player's inventory in pocket-Terraria.
 ## FAQ
 
 Q: What is the required Android version?
+
 A: You'll need to use 4.0.1 or above. Sorry 2.3 users :(
 
+
+
+
 Q: I have XPosed framework installed / I have modified the kernel / I have a newer samsung device. Will it work?
+
 A: Sadly, no. I don't know why, because I can't test it without the required hardware. It's just not working.
 
+
+
+
 Q: What "root app" do you recommend?
+
 A: I have [SuperSU 2.46](https://download.chainfire.eu/696/supersu/). It's the best for 4.x
 
+
+
+
 Q: Why do I need "mount namespace separation" turned off?
+
 A: For some devices Android doesn't allow the app to access the `/data/data/` folder.
 
+
+
+
 Q: Why does this app complain about "Busybox"? What is it?
+
 A: It's an utility binary that is usually better than the system's binaries, so it's recommended that you install it from [the market](market://stericson.busybox) Just press "Install", and it'll install it.
 > NOTE: It has a VERY, VERY LOW chance that it'll softbrick your device, so be careful. Read the insttructions for your device!
+
+
+
 
 Q: I get a similar error:
 ```
