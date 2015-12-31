@@ -38,7 +38,7 @@ A: You forgot to do something that I mentioned above, or you have a samsung devi
 
 ## Notes
 
-> This wont work on devices with SEAndroid (like samsung galaxy s4), because SEAndroid is way too Security Enhanced :P
+> This wont work on newer samsung devices (4.3+)
 
 > This application utilizes [Chainfire's libsuperuser](https://github.com/Chainfire/libsuperuser)
 
