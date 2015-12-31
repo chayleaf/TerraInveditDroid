@@ -23,7 +23,7 @@ A: Sadly, no. I don't know why, because I can't test it without the required har
 Q: What "root app" do you recommend?
 A: I have [SuperSU 2.46](https://download.chainfire.eu/696/supersu/). It's the best for 4.x
 
-Q: Why do I need "mount namespace separation" turned off?  
+Q: Why do I need "mount namespace separation" turned off?
 A: For some devices Android doesn't allow the app to access the `/data/data/` folder.
 
 Q: Why does this app complain about "Busybox"? What is it?
@@ -38,11 +38,11 @@ A: You forgot to do something that I mentioned above, or you have a samsung devi
 
 ## Notes
 
-> This wont work on devices with SEAndroid (like galaxy s4), because SEAndroid is way too Security Enhanced :P
+> This wont work on devices with SEAndroid (like samsung galaxy s4), because SEAndroid is way too Security Enhanced :P
 
-> If you do a backup, please make sure that all .player files have this format: `playername-##########.player` (where # is a digit, and yes, that's 10digits)
+> This application utilizes [Chainfire's libsuperuser](https://github.com/Chainfire/libsuperuser)
 
 
 # Downloads
 - [APK](https://github.com/MarcuzD/TerraInveditDroid/blob/master/bin/TerraInveditDroid.apk?raw=true)
-- [EXE](https://github.com/MarcuzD/MarcusD.TerraInvedit)
+- [EXE](https://github.com/MarcuzD/MarcusD.TerraInvedit) **(OBSOLETE)** 
