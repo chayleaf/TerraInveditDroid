@@ -15,10 +15,10 @@ A simple project to edit the player's inventory in pocket-Terraria.
 ## FAQ
 
 Q: Why do you not update?! It's not working!  
-A: Do you have the latest Terraria installed?  
+A: Do you have the latest version of Terraria installed?  
 
-* yes: Newer Terraria versions encrypt the savefile with [Blowfish](https://en.wikipedia.org/wiki/Blowfish_%28cipher%29), and I still haven't find the decryption keys for it.
-* no:  Read the other questions below.
+* Yes: Newer Terraria versions encrypt the savefile with [Blowfish](https://en.wikipedia.org/wiki/Blowfish_%28cipher%29), and I still haven't found the decryption keys for it.
+* No : Read the other questions below.
 
 Q: What is the required Android version?  
 A: You'll need to use 4.0.1 or above. Sorry 2.3 users :(
