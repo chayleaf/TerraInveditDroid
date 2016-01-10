@@ -10,7 +10,7 @@ A simple project to edit the player's inventory in pocket-Terraria.
 * Multiuser turned off in your "root app"
 * Stock Android ***unmodified*** kernel (this app is known not working for users with XPosed framework installed)
 
-> WARNING! BEFORE YOU DO ANYTHING, PLAEASE DO A BACKUP OF YOUR CHARACTER!
+> WARNING! BEFORE YOU DO ANYTHING, PLEASE DO A BACKUP OF YOUR CHARACTER!
 
 ## FAQ
 
