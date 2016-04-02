@@ -15,7 +15,7 @@ A simple project to edit the player's inventory in pocket-Terraria.
 ## FAQ
 
 Q: Why do you not update?! It's not working!  
-A: Do you have the latest version of Terraria installed?  
+A: Do you have the latest version (1.2.11011) of Terraria installed?  
 
 * Yes: Newer Terraria versions encrypt the savefile with [Blowfish](https://en.wikipedia.org/wiki/Blowfish_%28cipher%29), and I still haven't found the decryption keys for it.
 * No : Read the other questions below.
