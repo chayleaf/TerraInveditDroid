@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,21 +52,14 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
         //t2.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         //t2.show();
         
-        File f = new File("/data/data/com.and.games505.TerrariaPaid/files/");
-        if(!f.exists() || !f.isDirectory())
-        {
-        	Log.d("trace", "FAK");
-        	Log.d("trace", f.exists() + " " + f.canRead() + " " + f.canWrite() + " " + f.setReadOnly());
-        	ejjoj(getString(R.string.javatrans_noterr), true);
-        	return;
-        }
+        
         
         //Toast.makeText(getApplicationContext(), "Loading files...", Toast.LENGTH_LONG).show();
         
         Log.d("trace", "bad...");
         
         Debug.setSanityChecksEnabled(false);
-        List<String> str = Shell.SU.run("ls /data/data/com.and.games505.TerrariaPaid/files/*.player");
+        List<String> str = Shell.SU.run("busybox ls /data/data/com.and.games505.TerrariaPaid/files/*.player");
         Debug.setSanityChecksEnabled(true);
         
         for(String s : str)
@@ -130,7 +125,6 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
 		extractifnex(items, "Items.txt", false);
 		final File wotfeil = new File(data, "uwot.bmp");
 		extractifnex(wotfeil, "uwot.bmp", false);
-		Log.i("itemreg", "Pos "+ position + ", id:"+id);
 		final ProgressDialog pdi = ProgressDialog.show(this, getString(R.string.javatrans_dialog_loader), getString(R.string.javatrans_werk), true);
         
         pdi.setCancelable(false);
@@ -152,6 +146,7 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
 						if(ItemRegistry.instance == null)
 						{
 							ItemRegistry.instance = new ItemRegistry(getApplicationContext());
+							runOnUiThread(new Runnable(){@Override public void run(){ pdi.setMessage("Initializing item registry..."); }});
 							Map<Short, ItemEntry> itemmap = new HashMap<Short, ItemEntry>();
 							itemmap.put((short)0, ItemRegistry.instance.new ItemEntry((short)0, getString(R.string.javatrans_item_missingno), wotimg));
 							Log.i("itemreg", "no itemreg, new");
@@ -193,12 +188,14 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
 									return key1.compareTo(key2);
 								};
 							}.sort());
+							
+							runOnUiThread(new Runnable(){@Override public void run(){ pdi.setMessage(getString(R.string.javatrans_werk)); }});
 						}
 						
 						final File t = new File(getApplicationContext().getFilesDir(), "temp.bin");
 						if(t.exists()) t.delete();
 						
-						final List<String> str = Shell.SU.run("cat " + pd.file.getAbsolutePath() + " > " + t.getAbsolutePath());
+						final List<String> str = Shell.SU.run("busybox cat " + pd.file.getAbsolutePath() + " >" + t.getAbsolutePath());
 						if(!t.exists())
 						{
 							runOnUiThread(new Runnable()
@@ -216,16 +213,65 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
 						
 						DataInputStream fis = new DataInputStream(new FileInputStream(t));
 						
-						byte[] pdata = new byte[(int) t.length()];
+						final byte[] pdata = new byte[(int) t.length()];
 						
 						fis.readFully(pdata);
 						fis.close();
 						
+						if(pdata.length < 0x200)
+						{
+						    runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    pdi.dismiss();
+                                    Toast.makeText(getApplicationContext(), pdata.length == 0 ? "Your device is not supported" : "Your device is not supported, or corrupted savefile", Toast.LENGTH_LONG).show();
+                                }
+                            });
+						    return;
+						}
+						
+						ByteBuffer bb = ByteBuffer.allocate(2);
+						bb.order(ByteOrder.LITTLE_ENDIAN);
+						bb.put((byte)pdata[0]);
+						bb.put((byte)pdata[1]);
+						
+						final short val = bb.getShort(0);
+						
+						runOnUiThread(new Runnable(){@Override public void run(){ Toast.makeText(getApplicationContext(), "Save version: " + val + " (0x" + String.format("%04X", val) + ")", Toast.LENGTH_LONG).show(); }});
+						
+						if(val < 0)
+						{
+						    runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    pdi.dismiss();
+                                    Toast.makeText(getApplicationContext(), "This save file is not compatible with this program", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            return;
+						}
+						
+						if(val > 0x16)
+						{
+						    runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    pdi.dismiss();
+                                    Toast.makeText(getApplicationContext(), "Your savefile is encrypted, so it's not compatible with this program", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                            return;
+						}
 						
 						Intent it = new Intent(getApplicationContext(), InveditActivity.class);
 						it.putExtra("INV", pdata);
 						it.putExtra("ABSINV", pd.file.getAbsolutePath());
-						Log.d("wut", "start teh goddamn activity");
 						startActivityForResult(it, 56);
 					}
 					else
@@ -298,7 +344,7 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
 								bos.flush();
 								bos.close();
 								//Shell.SU.run("rm " + dat.getStringExtra("ABSINV"));
-								Shell.SU.run("cat " + f.getAbsolutePath() + " > " + dat.getStringExtra("ABSINV"));
+								Shell.SU.run("busybox cat " + f.getAbsolutePath() + " >" + dat.getStringExtra("ABSINV"));
 								Shell.SU.run("chmod 777 " + dat.getStringExtra("ABSINV"));
 							}
 							else

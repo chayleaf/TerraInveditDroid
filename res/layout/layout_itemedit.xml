@@ -8,31 +8,16 @@
     android:orientation="horizontal" >
 
     <NumberPicker
-        android:id="@+id/numberPicker2"
-        android:layout_width="100px"
-        android:layout_height="204dp"
-        android:layout_above="@+id/button4"
+        android:id="@+id/numItemnum"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/btnCancel"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_column="0"
-        android:layout_gravity="left|top"
-        android:layout_row="0"
-        android:layout_toLeftOf="@+id/numberPicker3"
-        tools:ignore="ObsoleteLayoutParam,PxUsage" />
-
-    <NumberPicker
-        android:id="@+id/numberPicker3"
-        android:layout_width="192dp"
-        android:layout_height="209dp"
-        android:layout_above="@+id/button4"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/button3"
-        android:fitsSystemWindows="false"
-        tools:ignore="PxUsage" >
-    </NumberPicker>
+        android:layout_gravity="left|top" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btnCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -41,23 +26,42 @@
         android:onClick="fak" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/btnSaev"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/btnCancel"
         android:onClick="saev"
-        android:text="@string/menu_saev"  />
+        android:text="@string/menu_saev" />
 
     <NumberPicker
-        android:id="@+id/numberPicker1"
-        android:layout_width="252dp"
-        android:layout_height="210dp"
-        android:layout_alignBottom="@+id/numberPicker3"
+        android:id="@+id/numItemname"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignBottom="@+id/numItemID"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/numberPicker3"
+        android:layout_toRightOf="@+id/numItemID"
         android:fadingEdge="vertical|none"
         android:orientation="vertical" />
+
+    <NumberPicker
+        android:id="@+id/numBuff"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignBottom="@+id/numItemnum"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/numItemnum"
+        android:fitsSystemWindows="false"
+        tools:ignore="PxUsage" />
+
+    <NumberPicker
+        android:id="@+id/numItemID"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_alignBottom="@+id/numBuff"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/numBuff" />
 
 </RelativeLayout>

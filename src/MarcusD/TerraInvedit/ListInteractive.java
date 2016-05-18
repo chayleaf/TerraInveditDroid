@@ -9,8 +9,6 @@ import android.widget.ArrayAdapter;
 public class ListInteractive<T> extends ListActivity
 {
 	ArrayList<T> listItems=new ArrayList<T>();
-
-    //DEFINING A STRING ADAPTER WHICH WILL HANDLE THE DATA OF THE LISTVIEW
     ArrayAdapter<T> adapter;
 
     @Override

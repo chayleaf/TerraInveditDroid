@@ -93,7 +93,7 @@ public class ItemRegistry
 		@Override
 		public String toString()
 		{
-			return iname + "(" + String.format("%04X", iid) + ")";
+			return iname;
 		}
 	}
 	

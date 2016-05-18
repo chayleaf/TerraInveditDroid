@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class InveditActivity extends ListActivity {
 
@@ -58,39 +59,40 @@ public class InveditActivity extends ListActivity {
     }
 
     //METHOD WHICH WILL HANDLE DYNAMIC INSERTION
-    public void refresh(boolean force)
+    public void refresh()
     {
     	corrupt = false;
     	listItems.clear();
-    	for(int i = 0; i < 40; i++)
+    	do
+    	{
+    	    ByteBuffer bb = ByteBuffer.allocate(4);
+    	    bb.order(ByteOrder.LITTLE_ENDIAN);
+    	    for(int i = 2; i != 6; i++) bb.put(buf[i]);
+    	    offset = 77 + (bb.getInt(0) * 2);
+    	}
+    	while(false);
+    	for(int i = 0; i != 48; i++)
         {
+    	    int iof = i * 5;
     		ByteBuffer bb = ByteBuffer.allocate(2);
     		bb.order(ByteOrder.LITTLE_ENDIAN);
-    		bb.put(buf[(i * 5) + 89 + offset]);
-    		bb.put(buf[(i * 5) + 90 + offset]);
+    		bb.put(buf[iof + 0 + offset]);
+    		bb.put(buf[iof + 1 + offset]);
     		short iid = bb.getShort(0);
     		bb.clear();
-    		bb.put(buf[(i * 5) + 91 + offset]);
-    		bb.put(buf[(i * 5) + 92 + offset]);
+    		bb.put(buf[iof + 2 + offset]);
+    		bb.put(buf[iof + 3 + offset]);
     		short cnt = bb.getShort(0);
     		ItemEntry ier = ir.basemap.get(iid);
     		if(ier.iid != iid)
     		{
     			corrupt = true;
-    			Log.e("disc", "loaded "+ String.format("%04X", iid) + ", got " + String.format("%04X", ier.iid) + ", plus iid is "+ String.format("%02X", buf[(i * 5) + 90 + offset]) + String.format("%02X", buf[(i * 5) + 89 + offset]));
+    			Log.e("disc", "loaded "+ String.format("%04X", iid) + ", got " + String.format("%04X", ier.iid) + ", plus iid is "+ String.format("%02X", buf[iof + 1 + offset]) + String.format("%02X", buf[iof + 0 + offset]));
     		}
-            listItems.add(new Item(ier, cnt, Buff.n(buf[(i * 5) + 93 + offset])));
+            listItems.add(new Item(ier, cnt, Buff.n(buf[iof + 4 + offset])));
         }
         adapter.notifyDataSetChanged();
-        if(corrupt && force)
-        {
-        	padforce();
-        }
-    }
-    
-    public void refresh()
-    {
-    	refresh(true);
+        if(corrupt) Toast.makeText(getApplicationContext(), "The inventory may be corrupted, please watch out when editing!", Toast.LENGTH_LONG).show();
     }
     
     @Override
@@ -103,6 +105,7 @@ public class InveditActivity extends ListActivity {
 		it.putExtra("POS", position);
 		it.putExtra("CNT", i.cnt);
 		it.putExtra("BUF", (byte)i.buffs.ordinal());
+		
 		startActivityForResult(it, 666);
 	}
     
@@ -117,13 +120,13 @@ public class InveditActivity extends ListActivity {
     			ByteBuffer bb = ByteBuffer.allocate(2);
     			bb.order(ByteOrder.LITTLE_ENDIAN);
     			bb.putShort(dat.getShortExtra("ID", (short)0));
-    			buf[(pos * 5) + 89 + offset] = bb.get(0);
-    			buf[(pos * 5) + 90 + offset] = bb.get(1);
+    			buf[(pos * 5) + 0 + offset] = bb.get(0);
+    			buf[(pos * 5) + 1 + offset] = bb.get(1);
     			bb.clear();
     			bb.putShort(dat.getShortExtra("CNT", (short)0));
-    			buf[(pos * 5) + 91 + offset] = bb.get(0);
-    			buf[(pos * 5) + 92 + offset] = bb.get(1);
-    			buf[(pos * 5) + 93 + offset] = dat.getByteExtra("BUF", (byte)0);
+    			buf[(pos * 5) + 2 + offset] = bb.get(0);
+    			buf[(pos * 5) + 3 + offset] = bb.get(1);
+    			buf[(pos * 5) + 4 + offset] = dat.getByteExtra("BUF", (byte)0);
     			refresh();
     		}
     	}
@@ -178,138 +181,10 @@ public class InveditActivity extends ListActivity {
 	        	setResult(-1);
 	        	finish();
 	        	return true;
-	        case R.id.item3:
-	        	padforce(true, true);
-	        	return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
 	}
-	
-	public void padforce()
-	{
-		padforce(true, false);
-	}
-	
-	public void padforce(boolean auto, boolean manual)
-	{
-		AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-		dlgAlert.setMessage((manual ? "" : getString(R.string.javatrans_padcorrupt)) + getString(R.string.javatrans_padq) + (manual ? "" : getString(R.string.javatrans_padw)));
-		dlgAlert.setTitle(getString(R.string.javatrans_padtitle));
-		if(manual)
-		{
-			dlgAlert.setPositiveButton(getString(R.string.javatrans_k), new OnClickListener()
-			{
-				@Override
-				public void onClick(DialogInterface dialog, int which)
-				{
-					padB(true);
-				}
-			});
-		}
-		else
-		{
-			dlgAlert.setPositiveButton(getString(R.string.javatrans_k), new OnClickListener()
-			{
-				@Override
-				public void onClick(DialogInterface dialog, int which)
-				{
-					padB(false);
-				}
-			});
-		}
-		if(auto)
-		{
-			dlgAlert.setNeutralButton(getString(R.string.javatrans_auto), new OnClickListener()
-			{
-				@Override
-				public void onClick(DialogInterface dialog, int which)
-				{
-					runOnUiThread(new Runnable()
-					{
-						@Override
-						public void run()
-						{
-							InveditActivity.this.fixpad();
-						}
-					});
-				
-				}
-			});
-		}
-		dlgAlert.setNegativeButton(getString(R.string.javatrans_nop), new OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				dialog.dismiss();
-			}
-		});
-		dlgAlert.setCancelable(false);
-		dlgAlert.create().show();
-	}
-	
-	public void fixpad() // run on ui thread pls
-	{
-		final ProgressDialog pd = new ProgressDialog(getApplicationContext());
-		pd.setCancelable(false);
-		pd.setIndeterminate(true);
-		pd.setTitle(getString(R.string.javatrans_padfix));
-		pd.setMax(16);
-		pd.setProgress(0);
-		//pd.show();
-		for(int i = 0; i != 17; i++)
-		{
-			this.offset = i;
-			refresh(false);
-			if(!corrupt)
-			{
-				pd.dismiss();
-				return;
-			}
-		}
-		padforce(false, false);
-	}
-	
-	public void pad() // "szar PAD....... fák" -- korponai, Enchanted Garten :D
-	{
-		padB(true);
-	}
-	
-	public void padB(boolean cancellable) // padding dialog
-    {
-         final Dialog d = new Dialog(this);
-         d.setTitle(getString(R.string.javatrans_padtitle));
-         d.setContentView(R.layout.dialog_pad);
-         Button b1 = (Button) d.findViewById(R.id.button1);
-         Button b2 = (Button) d.findViewById(R.id.button2);
-         b2.setEnabled(cancellable);
-         d.setCancelable(cancellable);
-         final NumberPicker np = (NumberPicker) d.findViewById(R.id.numberPicker1);
-         np.setMaxValue(128);
-         np.setMinValue(0);
-         np.setValue(this.offset);
-         np.setWrapSelectorWheel(true);
-         b1.setOnClickListener(new android.view.View.OnClickListener()
-         {
-        	 @Override
-        	 public void onClick(View v)
-        	 {
-        		 InveditActivity.this.offset = np.getValue();
-        		 InveditActivity.this.refresh();
-        		 d.dismiss();
-        	 }    
-         });
-         b2.setOnClickListener(new android.view.View.OnClickListener()
-         {
-        	 @Override
-        	 public void onClick(View v)
-        	 {
-        		 d.dismiss();
-        	 }    
-         });
-         d.show();
-    }
 	
 	public class ItemArrayAdapter extends ArrayAdapter<Item> {
 		private final Context context;

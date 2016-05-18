@@ -2,5 +2,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/item1" android:enabled="true" android:title="@string/menu_saev" android:showAsAction="ifRoom" android:visible="true"></item>
     <item android:id="@+id/item2" android:enabled="true" android:title="@string/menu_discard" android:showAsAction="ifRoom" android:visible="true"></item>
-    <item android:id="@+id/item3" android:enabled="true" android:title="@string/menu_pad" android:showAsAction="always" android:visible="true"></item>
 </menu>

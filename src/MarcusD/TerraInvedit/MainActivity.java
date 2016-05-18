@@ -1,5 +1,7 @@
 package MarcusD.TerraInvedit;
 
+import java.io.File;
+
 import eu.chainfire.libsuperuser.Shell;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -9,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 
@@ -22,26 +25,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        File f = new File("/data/data/com.and.games505.TerrariaPaid/files/");
+        if(!f.exists() || !f.isDirectory())
+        {
+            Log.d("trace", "FAK");
+            Log.d("trace", f.exists() + " " + f.canRead() + " " + f.canWrite() + " " + f.setReadOnly());
+            Button btn = (Button)findViewById(R.id.button1);
+            btn.setText(getString(R.string.javatrans_noterr));
+            btn.setEnabled(false);
+            return;
         }
-        return super.onOptionsItemSelected(item);
     }
     
     public void bad(View w)
