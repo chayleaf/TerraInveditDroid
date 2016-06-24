@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_label">TerraInvedit</string>
+    <string name="app_name">Редактор инвентаря для Террарии</string>
+    <string name="action_settings">Настройки</string>
+    <string name="title_activity_activity_players">Выберите игрока</string>
+    <string name="title_activity_invedit">Просмотр инвентаря</string>
+    <string name="title_activity_itemedit">Редактор предметов</string>
+    <string name="button_getroot">Запросить root</string>
+    <string name="menu_discard">Отменить</string>
+    <string name="menu_saev">Сохранить</string>
+    <string name="menu_pad">Отступ</string>
+    <string name="javatrans_missingno">Неизвестный предмет</string>
+    <string name="javatrans_noterr">Террария не установлена!</string>
+    <string name="javatrans_werk">Кое-что делаем&#8230;</string>
+    <string name="javatrans_dialog_loader">Загружаем файл игрока</string>
+    <string name="javatrans_dialog_save">Сохраняемости файл игрока</string>
+    <string name="javatrans_item_missingno">* Пусто *</string>
+    <string name="javatrans_item_empty">* Не существует *</string>
+    <string name="javatrans_rootprogress">Запрашиваем root&#8230;</string>
+    <string name="javatrans_rootejj">Не удалось получить root</string>
+    <string name="javatrans_padtitle">Сохранить отступ</string>
+    <string name="javatrans_padcorrupt">Этот файл кажется повреждённым. </string>
+    <string name="javatrans_padq">Вы хотите попробовать его исправить?</string>
+    <string name="javatrans_padw">\n\nВнимание: сохранение на этой точке может повредить ваш файл игрока! Используйте с осторожностью!</string>
+    <string name="javatrans_auto">Автоматически</string>
+    <string name="javatrans_nop">Нет</string>
+    <string name="javatrans_k">Да</string>
+    <string name="javatrans_padfix">Чиним файл&#8230;</string>
+
+</resources>
