@@ -15,7 +15,7 @@
     <string name="javatrans_noterr">Террария не установлена!</string>
     <string name="javatrans_werk">Кое-что делаем&#8230;</string>
     <string name="javatrans_dialog_loader">Загружаем файл игрока</string>
-    <string name="javatrans_dialog_save">Сохраняемости файл игрока</string>
+    <string name="javatrans_dialog_save">Сохраняем файл игрока</string>
     <string name="javatrans_item_missingno">* Пусто *</string>
     <string name="javatrans_item_empty">* Не существует *</string>
     <string name="javatrans_rootprogress">Запрашиваем root&#8230;</string>
