@@ -322,12 +322,12 @@ public class Blowfish
     
     public void encipher(int[] out, int offsout, int[] in, int offsin, int len)
     {
-        int im = len / 8;
+        int im = len / 2;
         for (int i = 0; i != im; i++)
         {
             encipher_block(out, offsout, in, offsin);
-            offsin += 8;
-            offsout += 8;
+            offsin += 2;
+            offsout += 2;
         }
     }
     

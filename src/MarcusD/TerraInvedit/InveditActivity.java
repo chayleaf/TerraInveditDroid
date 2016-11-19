@@ -67,12 +67,10 @@ public class InveditActivity extends ListActivity {
     	listItems.clear();
     	do
     	{
-    	    ByteBuffer bb = ByteBuffer.allocate(4);
-    	    bb.order(ByteOrder.LITTLE_ENDIAN);
-    	    for(int i = 2; i != 6; i++) { Log.e("len", buf[i] + ""); bb.put(buf[i]); }
-    	    offset = 77 + (bb.getInt(0) * 2);
+    	    offset = 77 + (buf[2] * 2);
     	    
-    	    bb.clear();
+    	    ByteBuffer bb = ByteBuffer.allocate(4);
+            bb.order(ByteOrder.LITTLE_ENDIAN);
     	    bb.put(0, buf[0]);
     	    bb.put(1, buf[1]);
     	    short gamever = bb.getShort();

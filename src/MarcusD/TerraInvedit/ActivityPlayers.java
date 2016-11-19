@@ -274,7 +274,7 @@ public class ActivityPlayers extends ListInteractive<Playerdata>
                                 @Override
                                 public void run()
                                 {
-                                    //pdi.dismiss();
+                                    pdi.dismiss();
                                     Toast.makeText(getApplicationContext(), pdata.length == 0 ? "Your device is not supported" : "Your device is not supported, or corrupted savefile", Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -339,7 +339,7 @@ public class ActivityPlayers extends ListInteractive<Playerdata>
                                     @Override
                                     public void run()
                                     {
-                                        //pdi.dismiss();
+                                        pdi.dismiss();
                                         Toast.makeText(getApplicationContext(), "Corrupted savefile detected!" + ((val > 0x16) ? "\nPlease check the validity of the Blowfish encryption key!" : "") , Toast.LENGTH_LONG).show();
                                     }
                                 }
@@ -425,16 +425,23 @@ public class ActivityPlayers extends ListInteractive<Playerdata>
 		                        
 		                        if(val > 0x16)
 		                        {
-		                            runOnUiThread(new Runnable()
+		                            if(bf == null) initblowfish();
+		                            if(bf == null)
 		                            {
-		                                @Override
-		                                public void run()
-		                                {
-		                                    //pdi.dismiss();
-		                                    Toast.makeText(getApplicationContext(), "Your savefile is encrypted, so it's not compatible with this program", Toast.LENGTH_LONG).show();
-		                                }
-		                            });
-		                            //return;
+		                                runOnUiThread
+		                                (
+		                                    new Runnable()
+		                                    {
+		                                        @Override
+		                                        public void run()
+		                                        {
+		                                            pdi.dismiss();
+		                                            Toast.makeText(getApplicationContext(), "Failed to reinit Blowfish, so your edits were discarded", Toast.LENGTH_LONG).show();
+		                                        }
+		                                    }
+		                                );
+		                                return;
+		                            }
 		                            
 		                            bf.reinit();
 		                            bf.encipher(pdata, 2, pdata, 2, pdata.length - 2);
