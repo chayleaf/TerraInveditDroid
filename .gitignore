@@ -16,5 +16,5 @@
 
 # Android stuff
 /gen/
+/bin/
 !/bin/*.apk
-/bin/*
