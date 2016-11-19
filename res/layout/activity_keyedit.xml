@@ -6,27 +6,36 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="MarcusD.TerraInvedit.MainActivity" >
+    tools:context="MarcusD.TerraInvedit.ActivityKeyedit" >
 
-    <Button
-        android:id="@+id/button1"
+    <EditText
+        android:id="@+id/text_bfkey"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:onClick="ackroot"
-        android:text="@string/button_getroot" />
+        android:ems="10"
+        android:hint="Blowfish key" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_savekey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/text_bfkey"
+        android:onClick="savekey"
+        android:text="Save" />
+
+    <Button
+        android:id="@+id/btn_checkkey"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/btn_savekey"
         android:layout_centerHorizontal="true"
-        android:onClick="showkey"
-        android:text="@string/button_setkey" />
+        android:onClick="checkkey"
+        android:text="Check validity" />
 
 </RelativeLayout>

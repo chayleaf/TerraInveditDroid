@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 
+import org.apache.http.util.ByteArrayBuffer;
+
 import MarcusD.TerraInvedit.ItemRegistry.Buff;
 import MarcusD.TerraInvedit.ItemRegistry.ItemEntry;
 import android.annotation.SuppressLint;
@@ -67,8 +69,15 @@ public class InveditActivity extends ListActivity {
     	{
     	    ByteBuffer bb = ByteBuffer.allocate(4);
     	    bb.order(ByteOrder.LITTLE_ENDIAN);
-    	    for(int i = 2; i != 6; i++) bb.put(buf[i]);
+    	    for(int i = 2; i != 6; i++) { Log.e("len", buf[i] + ""); bb.put(buf[i]); }
     	    offset = 77 + (bb.getInt(0) * 2);
+    	    
+    	    bb.clear();
+    	    bb.put(0, buf[0]);
+    	    bb.put(1, buf[1]);
+    	    short gamever = bb.getShort();
+    	    
+    	    if(gamever > 0x16) offset++;
     	}
     	while(false);
     	for(int i = 0; i != 48; i++)

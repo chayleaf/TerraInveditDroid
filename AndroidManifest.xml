@@ -5,8 +5,11 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="14" android:targetSdkVersion="14"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+        android:minSdkVersion="14"
+        android:targetSdkVersion="14" />
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".ThrowableApplication"
@@ -25,13 +28,20 @@
         </activity>
         <activity
             android:name=".ActivityPlayers"
-            android:label="@string/title_activity_activity_players" >
+            android:label="@string/title_activity_players" >
         </activity>
         <activity
             android:name=".InveditActivity"
             android:label="@string/title_activity_invedit" >
         </activity>
-        <activity android:name=".ActivityItemedit" android:label="@string/title_activity_itemedit"></activity>
+        <activity
+            android:name=".ActivityItemedit"
+            android:label="@string/title_activity_itemedit" >
+        </activity>
+        <activity
+            android:name=".ActivityKeyedit"
+            android:label="@string/title_activity_keyedit" >
+        </activity>
     </application>
 
 </manifest>

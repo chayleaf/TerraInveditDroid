@@ -4,7 +4,7 @@
     <string name="app_label">TerraInvedit</string>
     <string name="app_name">Terraria inventory editor</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_activity_players">Select a player</string>
+    <string name="title_activity_players">Select a player</string>
     <string name="title_activity_invedit">Inventory viewer</string>
     <string name="title_activity_itemedit">Item editor</string>
     <string name="button_getroot">Acquire root</string>
@@ -28,5 +28,7 @@
     <string name="javatrans_nop">Nope</string>
     <string name="javatrans_k">Yup</string>
     <string name="javatrans_padfix">Fixing padding&#8230;</string>
+    <string name="button_setkey">Blowfish key</string>
+    <string name="title_activity_keyedit">Blowfish key editor</string>
 
 </resources>

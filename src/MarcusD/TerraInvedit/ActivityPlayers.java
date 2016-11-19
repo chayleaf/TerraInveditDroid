@@ -13,38 +13,83 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
 import eu.chainfire.libsuperuser.Debug;
 import eu.chainfire.libsuperuser.Shell;
 import MarcusD.TerraInvedit.ActivityPlayers.Playerdata;
 import MarcusD.TerraInvedit.ItemRegistry.ItemEntry;
+import MarcusD.TerraInvedit.encryption.Blowfish;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class ActivityPlayers extends ListInteractive<Playerdata> {
-
+public class ActivityPlayers extends ListInteractive<Playerdata>
+{
+    public Blowfish bf = null;
+    
+    
 	public boolean bad = false;
 	Bitmap wotimg;
+	
+	
+	public Boolean initblowfish()
+	{
+	    bf = null;
+	    
+	    File f = new File(getApplicationContext().getFilesDir(), "debugkey.txt");
+        if(f.exists())
+        {
+            try
+            {
+                DataInputStream dis = new DataInputStream(new FileInputStream(f));
+                String key = dis.readLine();
+                dis.close();
+                bf = new Blowfish(key);
+            }
+            catch (FileNotFoundException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        
+        return bf != null;
+	}
+	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_items);
         
+		((ListView)findViewById(android.R.id.list)).setEmptyView((TextView)findViewById(android.R.id.empty));
         
         Log.d("trace", "Loading files");
         
@@ -52,14 +97,28 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
         //t2.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
         //t2.show();
         
+        Boolean haz = false;
+        PackageManager pm = getPackageManager();
+        PackageInfo pi = null;
+        try
+        {
+            pi = pm.getPackageInfo("com.and.games505.TerrariaPaid", 0);
+            haz = true;
+        }
+        catch(PackageManager.NameNotFoundException e) {}
         
+        if(!haz) return;
+        
+        String datapath = pi.applicationInfo.dataDir + "/files";
         
         //Toast.makeText(getApplicationContext(), "Loading files...", Toast.LENGTH_LONG).show();
         
         Log.d("trace", "bad...");
         
+        Log.d("trace", datapath);
+        
         Debug.setSanityChecksEnabled(false);
-        List<String> str = Shell.SU.run("busybox ls /data/data/com.and.games505.TerrariaPaid/files/*.player");
+        List<String> str = Shell.SU.run("busybox ls " + datapath + "/*.player");
         Debug.setSanityChecksEnabled(true);
         
         for(String s : str)
@@ -83,23 +142,16 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
         	}
         }
         
+        initblowfish();
+        
         refresh();
-    }
-    
-    private void ejjoj(String txt, Boolean top)
-    {
-    	Toast t = Toast.makeText(this, txt, Toast.LENGTH_LONG);
-    	if(top) t.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
-    	t.show();
-		finish();
-		android.os.Process.killProcess(android.os.Process.myPid());
     }
 
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_players, menu);
+		//getMenuInflater().inflate(R.menu.activity_players, menu);
 		return true;
 	}
 
@@ -109,9 +161,6 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -225,7 +274,7 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
                                 @Override
                                 public void run()
                                 {
-                                    pdi.dismiss();
+                                    //pdi.dismiss();
                                     Toast.makeText(getApplicationContext(), pdata.length == 0 ? "Your device is not supported" : "Your device is not supported, or corrupted savefile", Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -257,15 +306,44 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
 						
 						if(val > 0x16)
 						{
-						    runOnUiThread(new Runnable()
-                            {
-                                @Override
-                                public void run()
+						    if(bf == null) initblowfish();
+						    if(bf == null)
+						    {
+						        runOnUiThread
+						        (
+						            new Runnable()
+						            {
+						                @Override
+						                public void run()
+						                {
+						                    pdi.dismiss();
+						                    Toast.makeText(getApplicationContext(), "Failed to decrypt! Please set the Blowfish key in the settings!", Toast.LENGTH_LONG).show();
+						                }
+						            }
+						        );
+                                return;
+						    }
+						    
+						    if(pdata.length % 8 != 2) throw new Exception("Invalid padding: " + (pdata.length % 8));
+						    
+						    bf.reinit();
+						    bf.decipher(pdata, 2, pdata, 2, pdata.length - 2);
+						}
+						
+						if(pdata[3] != 0 || pdata[4] != 0 || pdata[5] != 0)
+						{
+						    runOnUiThread
+                            (
+                                new Runnable()
                                 {
-                                    pdi.dismiss();
-                                    Toast.makeText(getApplicationContext(), "Your savefile is encrypted, so it's not compatible with this program", Toast.LENGTH_LONG).show();
+                                    @Override
+                                    public void run()
+                                    {
+                                        //pdi.dismiss();
+                                        Toast.makeText(getApplicationContext(), "Corrupted savefile detected!" + ((val > 0x16) ? "\nPlease check the validity of the Blowfish encryption key!" : "") , Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                            });
+                            );
                             return;
 						}
 						
@@ -337,10 +415,35 @@ public class ActivityPlayers extends ListInteractive<Playerdata> {
 							
 							if(bad2)
 							{
+							    byte[] pdata = dat.getByteArrayExtra("INV");
+							    
+							    ByteBuffer bb = ByteBuffer.allocate(2);
+		                        bb.order(ByteOrder.LITTLE_ENDIAN);
+		                        bb.put((byte)pdata[0]);
+		                        bb.put((byte)pdata[1]);
+		                        final short val = bb.getShort(0);
+		                        
+		                        if(val > 0x16)
+		                        {
+		                            runOnUiThread(new Runnable()
+		                            {
+		                                @Override
+		                                public void run()
+		                                {
+		                                    //pdi.dismiss();
+		                                    Toast.makeText(getApplicationContext(), "Your savefile is encrypted, so it's not compatible with this program", Toast.LENGTH_LONG).show();
+		                                }
+		                            });
+		                            //return;
+		                            
+		                            bf.reinit();
+		                            bf.encipher(pdata, 2, pdata, 2, pdata.length - 2);
+		                        }
+							    
 								File f = new File(getApplicationContext().getFilesDir(), "saev.bin");
 								if(f.exists()) f.delete();
 								BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(f));
-								bos.write(dat.getByteArrayExtra("INV"));
+								bos.write(pdata);
 								bos.flush();
 								bos.close();
 								//Shell.SU.run("rm " + dat.getStringExtra("ABSINV"));
