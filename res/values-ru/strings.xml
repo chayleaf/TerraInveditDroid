@@ -28,5 +28,7 @@
     <string name="javatrans_nop">Нет</string>
     <string name="javatrans_k">Да</string>
     <string name="javatrans_padfix">Чиним файл&#8230;</string>
+    <string name="button_setkey">Ключ Blowfish</string>
+    <string name="title_activity_keyedit">Редактор ключа Blowfish</string>
 
 </resources>
